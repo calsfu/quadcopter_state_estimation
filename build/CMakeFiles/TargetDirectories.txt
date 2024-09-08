@@ -1,2 +1,0 @@
-C:/src/cpp/drone_state_est/build/CMakeFiles/edit_cache.dir
-C:/src/cpp/drone_state_est/build/CMakeFiles/rebuild_cache.dir
