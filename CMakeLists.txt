@@ -1,20 +1,30 @@
-cmake_minimum_required(VERSION 3.12)
-set(CMAKE_CXX_STANDARD 20)
+cmake_minimum_required(VERSION 3.10)
+project(DroneStateEstimation VERSION 1.0 LANGUAGES CXX)
+
+# Set C++ standard
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(WEBOTS_HOME "/usr/local/webots")
-set(CMAKE_PREFIX_PATH "/usr/local" ${CMAKE_PREFIX_PATH})
-set(Eigen3_DIR "/usr/include/eigen-3.4.0")
 
-project( QUADCONTROL )
+# Find Eigen package
+find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 
-find_package(Eigen3  REQUIRED )
-find_package(manif  REQUIRED )
+# Manually include the Webots directories
+include_directories(/usr/local/webots/include)
+include_directories(include)  # Add this line to include your project's header files
 
-file(GLOB QUADCONTROL_SRC
-     "include/*.h"
-     "src/*.cpp"
-)
-
+# Link the Webots controller libraries
 link_directories(${WEBOTS_HOME}/lib)
-add_executable( quad ${QUADCONTROL_SRC} )
-target_link_libraries(quad ${WEBOTS_HOME}/lib/controller/libCppController.so pthread)
-target_include_directories( quad SYSTEM PUBLIC ${EIGEN3_INCLUDE_DIR} ${manif_INCLUDE_DIRS} ${WEBOTS_HOME}/include/controller/cpp include/)
+
+# Specify where the source files are
+file(GLOB_RECURSE SOURCES src/*.cpp)
+
+# Add executable
+add_executable(${PROJECT_NAME} ${SOURCES})
+
+# Link Eigen and Webots libraries
+target_link_libraries(${PROJECT_NAME} Eigen3::Eigen ${WEBOTS_HOME}/lib/controller/libCppController.so)
+target_include_directories(${PROJECT_NAME} PRIVATE ${WEBOTS_HOME}/include/controller/cpp)
+
+# Set output directories for runtime binaries
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
