@@ -37,6 +37,16 @@ int main() {
     auto cheater_pos = quad.get_pos_true();
     auto cheater_vel = quad.get_vel_true();
     auto cheater_rot = quad.get_rot_true();
+
+    std::cout << "Time: " << quad.get_time() << std::endl;
+    std::cout << "Omega: " << omega.transpose() << std::endl;
+    std::cout << "Accel: " << a.transpose() << std::endl;
+    std::cout << "GPS Pos: " << gps_pos.transpose() << std::endl;
+    std::cout << "GPS Vel: " << gps_vel.transpose() << std::endl;
+    std::cout << "Mag: " << mag.transpose() << std::endl;
+    std::cout << "Cheater Pos: " << cheater_pos.transpose() << std::endl;
+    std::cout << "Cheater Vel: " << cheater_vel.transpose() << std::endl;
+    std::cout << "Cheater Rot: " << cheater_rot.coeffs().transpose() << std::endl;
   }
 
   return 0;

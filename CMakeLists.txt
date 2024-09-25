@@ -9,6 +9,9 @@ set(WEBOTS_HOME "/usr/local/webots")
 # Find Eigen package
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 
+# Find the manif library
+find_package(manif REQUIRED)
+
 # Manually include the Webots directories
 include_directories(/usr/local/webots/include)
 include_directories(include)  # Add this line to include your project's header files
@@ -25,6 +28,9 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 # Link Eigen and Webots libraries
 target_link_libraries(${PROJECT_NAME} Eigen3::Eigen ${WEBOTS_HOME}/lib/controller/libCppController.so)
 target_include_directories(${PROJECT_NAME} PRIVATE ${WEBOTS_HOME}/include/controller/cpp)
+
+# Add manif include directories to the target
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC ${manif_INCLUDE_DIRS})
 
 # Set output directories for runtime binaries
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
