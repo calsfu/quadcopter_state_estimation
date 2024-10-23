@@ -24,7 +24,6 @@ void CExtendedKalmanFilter::predict(Eigen::Vector4d u, const Eigen::Vector3d& kr
     State x_predict = f(krAccel, krGyro);
 
     // Predict covariance
-    Eigen::Matrix3d F;
     manif::SE_2_3d::Jacobian F, J_o_dx;
     X = X.rplus(manif::SE_2_3Tangentd(u), F, J_o_dx);
 
@@ -34,14 +33,18 @@ void CExtendedKalmanFilter::predict(Eigen::Vector4d u, const Eigen::Vector3d& kr
     
 }
 
-void CExtendedKalmanFilter::update(Eigen::Vector4d z) {
-    // Compute innovation
+void CExtendedKalmanFilter::update(Eigen::Vector3d z) {
+    // jacobian
+    Eigen::Matrix<double, 3, 10> H;
+    H.setZero();
+    H.block<3, 3>(0, 0) = Eigen::Matrix3d::Identity();
 
-    // Compute innovation covariance
+    // kalman gain
+    Eigen::Matrix<double, 10, 3> K = P * H.transpose() * (H * P * H.transpose() + R).inverse();
 
-    // Compute Kalman gain
+    // update state estimate
+    x = x + K * (z - H * x);
 
-    // Update state
-
-    // Update covariance
+    // update covariance
+    P = (Eigen::Matrix<double, 10, 10>::Identity() - K * H) * P;
 }
