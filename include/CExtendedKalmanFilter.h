@@ -14,16 +14,16 @@ public:
     /// @param Q  Input noise covariance
     /// @param R  Measurement noise covariance
     /// @param dt Time step
-    CExtendedKalmanFilter(Vector10d x0, Matrix12d P0, Matrix12d Q, Matrix12d R, double dt) 
+    CExtendedKalmanFilter(State x0, Matrix12d P0, Matrix12d Q, Matrix12d R, double dt) 
         : x(x0), P(P0), Q(Q), R(R), dt(dt) {}
     
-    Vector10d get_state() { return x; }
+    State get_state() { return x; }
 
     /// @brief Computes the state transition function
     /// @param omega Angular velocity
     /// @param accel Acceleration
     /// @return Predicted state
-    Vector10d f(const Eigen::Vector3d& krAccel, const Eigen::Vector3d& krGyro);
+    State f(const Eigen::Vector3d& krAccel, const Eigen::Vector3d& krGyro);
 
     /// @brief Predict the state estimate
     /// @param u Control input
@@ -33,7 +33,10 @@ public:
     /// @param z Measurement
     void update(Eigen::Vector4d z);
 
-    Vector10d x; //< State of [pos, vel, quat]
+private:
+    using State = manif::SE_2_3d;
+    
+    State x; //< State of [pos, vel, quat]
     Matrix12d P; //< Covariance
     Matrix12d Q; //< Process noise covariance
     Matrix12d R; //< Measurement noise covariance

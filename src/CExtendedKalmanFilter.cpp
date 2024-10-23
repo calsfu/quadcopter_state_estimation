@@ -1,6 +1,6 @@
 #include "CExtendedKalmanFilter.h"
 
-Vector10d CExtendedKalmanFilter::f(const Eigen::Vector3d& krAccel, const Eigen::Vector3d& krGyro)
+State CExtendedKalmanFilter::f(const Eigen::Vector3d& krAccel, const Eigen::Vector3d& krGyro)
 {
     Vector10d xdot;
 
@@ -21,10 +21,16 @@ Vector10d CExtendedKalmanFilter::f(const Eigen::Vector3d& krAccel, const Eigen::
 
 void CExtendedKalmanFilter::predict(Eigen::Vector4d u, const Eigen::Vector3d& krAccel, const Eigen::Vector3d& krGyro) {
     // Predict state
-    Vector10d x_predict = f(krAccel, krGyro);
+    State x_predict = f(krAccel, krGyro);
 
     // Predict covariance
     Eigen::Matrix3d F;
+    manif::SE_2_3d::Jacobian F, J_o_dx;
+    X = X.rplus(manif::SE_2_3Tangentd(u), F, J_o_dx);
+
+    // Make sure state is on manifold
+    X.normalize();
+
     
 }
 
